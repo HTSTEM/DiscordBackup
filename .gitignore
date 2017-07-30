@@ -97,5 +97,8 @@ ENV/
 # mkdocs documentation
 /site
 
+#token
+token.txt
+
 # mypy
 .mypy_cache/
