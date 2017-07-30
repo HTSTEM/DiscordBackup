@@ -100,5 +100,8 @@ ENV/
 #token
 token.txt
 
+#databases
+*.sqlite
+
 # mypy
 .mypy_cache/

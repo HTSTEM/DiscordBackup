@@ -1,5 +1,6 @@
 import sqlite3
 import sys
+import datetime
 
 import discord
 
@@ -11,8 +12,8 @@ database = sqlite3.connect("{}.sqlite".format(sys.argv[2]))
 async def on_ready():
     print("logged in")
     def scrub(s):
-        while "--" in s:
-            s = s.replace("--", "-")
+        while "-" in s:
+            s = s.replace("-", "")
         return s
     def check_table_exists(tablename):
         dbcur = database.cursor()
@@ -32,19 +33,20 @@ async def on_ready():
             if channel.permissions_for(guild.get_member(client.user.id)).read_message_history:
                 sys.stdout.write("Logging {0}: Counting".format(channel.name))
                 sys.stdout.flush()
-                
-                msg_c = 0
-                async for message in channel.history(limit=None):
-                    msg_c += 1
-            
-                print("\rLogging {0}: 0/{1}         ".format(channel.name, msg_c), end="")
                 cursor = database.cursor()
+                after = datetime.datetime.utcfromtimestamp(0)
                 if check_table_exists(scrub(channel.name)):
-                    cursor.execute("""DROP TABLE "{0}\"""".format(scrub(channel.name)))
-                cursor.execute("""CREATE TABLE "{0}"(uid INTEGER, mid INTEGER, message TEXT, files TEXT, timestamp TEXT)""".format(scrub(channel.name)))
+                    cursor.execute("""SELECT timestamp FROM {0} LIMIT 1""".format(scrub(channel.name)))
+                    after = datetime.datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d %H:%M:%S.%f")
+                else:
+                    cursor.execute("""CREATE TABLE "{0}"(uid INTEGER, mid INTEGER, message TEXT, files TEXT, timestamp TEXT)""".format(scrub(channel.name)))
                 database.commit()
                 count = 0
-                async for message in channel.history(limit=None):
+                msg_c = 0
+                async for message in channel.history(limit=None,after=after):
+                    msg_c += 1
+                print("\rLogging {0}: 0/{1}         ".format(channel.name, msg_c), end="")
+                async for message in channel.history(limit=None,after=after):
                     at = ",".join([i.url for i in message.attachments])
                     cursor.execute("""
                         INSERT INTO "{0}"(uid, mid, message, files, timestamp)
@@ -59,4 +61,4 @@ async def on_ready():
     await client.logout()
 
 
-client.run(open('token.txt','r').read().split('\n')[0])
+client.run(open('token.txt','r').read().split('\n')[0], bot=False)
