@@ -35,11 +35,11 @@ async def on_ready():
                 sys.stdout.flush()
                 cursor = database.cursor()
                 after = datetime.datetime.utcfromtimestamp(0)
-                if check_table_exists(scrub(channel.name)):
-                    cursor.execute("""SELECT timestamp FROM {0} LIMIT 1""".format(scrub(channel.name)))
+                if check_table_exists(scrub(channel.id)):
+                    cursor.execute("""SELECT timestamp FROM {0} LIMIT 1""".format(scrub(channel.id)))
                     after = datetime.datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d %H:%M:%S.%f")
                 else:
-                    cursor.execute("""CREATE TABLE "{0}"(uid INTEGER, mid INTEGER, message TEXT, files TEXT, timestamp TEXT)""".format(scrub(channel.name)))
+                    cursor.execute("""CREATE TABLE "{0}"(uid INTEGER, mid INTEGER, message TEXT, files TEXT, timestamp TEXT)""".format(scrub(channel.id)))
                 database.commit()
                 count = 0
                 msg_c = 0
@@ -50,7 +50,7 @@ async def on_ready():
                     at = ",".join([i.url for i in message.attachments])
                     cursor.execute("""
                         INSERT INTO "{0}"(uid, mid, message, files, timestamp)
-                        VALUES (?, ?, ?, ?, ?)""".format(scrub(channel.name)), (message.author.id, message.id, message.content, at, message.created_at))
+                        VALUES (?, ?, ?, ?, ?)""".format(scrub(channel.id)), (message.author.id, message.id, message.content, at, message.created_at))
                     count += 1
                     if count % 200 == 0:
                         database.commit()
