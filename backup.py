@@ -37,7 +37,10 @@ async def on_ready():
                 after = datetime.datetime(2015,3,1)
                 if check_table_exists(channel.id):
                     cursor.execute("""SELECT timestamp FROM `{0}` ORDER BY timestamp DESC LIMIT 1""".format(channel.id))
-                    after = datetime.datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d %H:%M:%S.%f")
+                    try:
+                        after = datetime.datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d %H:%M:%S.%f")
+                    except TypeError:
+                        pass
                 else:
                     cursor.execute("""CREATE TABLE `{0}`(uid INTEGER, mid INTEGER, message TEXT, files TEXT, timestamp TEXT)""".format(channel.id))
                 database.commit()
