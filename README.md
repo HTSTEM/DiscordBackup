@@ -1,5 +1,5 @@
 # DiscordBackup
-A simple Python script for backing up discord servers.
+A simple Python script for backing up Discord servers.
 
 Usage for now:
 
