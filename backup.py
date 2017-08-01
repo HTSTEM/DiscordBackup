@@ -30,8 +30,21 @@ async def on_ready():
         return False
     
     guild = client.get_guild(int(sys.argv[1]))
+    cursor = database.cursor()
+    if check_table_exists('channels'):
+        cursor.execute("""DROP TABLE channels""")
+    cursor.execute("""CREATE TABLE channels(cid INTEGER, position INTEGER, name TEXT, topic TEXT, type TEXT)""")
+    cursor.close()
+    database.commit()
     for channel in guild.channels:
         if isinstance(channel, discord.TextChannel):
+            cursor = database.cursor()
+            cursor.execute(
+                """INSERT INTO channels(cid, position, name, topic, type) VALUES (?, ?, ?, ?, ?)""",
+                (channel.id, channel.position, channel.name, str(channel.topic), 'discord.TextChannel')
+            )
+            cursor.close()
+            database.commit()
             if channel.permissions_for(guild.get_member(client.user.id)).read_message_history:
                 sys.stdout.write("Logging {0}: Counting".format(channel.name))
                 sys.stdout.flush()
@@ -62,6 +75,14 @@ async def on_ready():
                         print("\rLogging {0}: {1}/{2}".format(channel.name, count, msg_c), end="")
                 database.commit()
                 print("\rLogging {0}: [DONE]            ".format(channel.name))
+        elif isinstance(channel, discord.VoiceChannel):
+            cursor = database.cursor()
+            cursor.execute(
+                """INSERT INTO channels(cid, position, name, topic, type) VALUES (?, ?, ?, ?, ?)""",
+                (channel.id, channel.position, channel.name, '', 'discord.VoiceChannel')
+            )
+            cursor.close()
+            database.commit()
     print("LOGS FINISHED!")
     await client.logout()
 
