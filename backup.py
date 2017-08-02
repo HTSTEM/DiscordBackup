@@ -10,7 +10,15 @@ client = discord.Client()
 
 @client.async_event
 async def on_ready():
-    print("Logged in")
+    if __name__ == '__main__':
+        print("Logged in")
+        if len(sys.argv) == 2:
+            await make_logs(sys.argv[1],sys.argv[1])
+        elif len(sys.argv) > 2:
+            await make_logs(sys.argv[1],sys.argv[2])
+        await client.logout()
+    
+async def make_logs(guildid, filename):
     database = None
     def scrub(s):
         while "-" in s:
@@ -29,8 +37,7 @@ async def on_ready():
         return False
     
     guild = client.get_guild(int(sys.argv[1]))
-    try: database = sqlite3.connect("{}.sqlite".format(sys.argv[2]))
-    except: database = sqlite3.connect("{}.sqlite".format(sys.argv[1]))
+    database = sqlite3.connect("{}.sqlite".format(filename))
     
     cursor = database.cursor()
     if check_table_exists('channels'):
@@ -86,7 +93,7 @@ async def on_ready():
             cursor.close()
             database.commit()
     print("LOGS FINISHED!")
-    await client.logout()
 
-
-client.run(open('token.txt','r').read().split('\n')[0], bot=False)
+if __name__ == '__main__':
+    #bot=False may have to be changed if you are using a bot
+    client.run(open('token.txt','r').read().split('\n')[0], bot=False)
