@@ -8,11 +8,10 @@ import discord
 
 client = discord.Client()
 
-database = sqlite3.connect("{}.sqlite".format(sys.argv[2]))
-
 @client.async_event
 async def on_ready():
-    print("logged in")
+    print("Logged in")
+    database = None
     def scrub(s):
         while "-" in s:
             s = s.replace("-", "")
@@ -30,6 +29,9 @@ async def on_ready():
         return False
     
     guild = client.get_guild(int(sys.argv[1]))
+    try: database = sqlite3.connect("{}.sqlite".format(sys.argv[2]))
+    except: database = sqlite3.connect("{}.sqlite".format(sys.argv[1]))
+    
     cursor = database.cursor()
     if check_table_exists('channels'):
         cursor.execute("""DROP TABLE channels""")
