@@ -10,7 +10,7 @@ class Archiver(discord.Client):
     def __init__(self, guild_id, filename='', token=''):
         discord.Client.__init__(self)
         self.guild_id = guild_id
-        self.filename = ''
+        self.filename = filename
         self.ready = False
 
         def scrub(s):
@@ -75,13 +75,13 @@ class Archiver(discord.Client):
 
 def main():
     filename = ''
-    if len(sys.argv) > 1:
+    if len(sys.argv) >= 2:
         try:
             g_id = int(sys.argv[1])
         except ValueError:
             print('Usage: python live.py <guild id> [output filename]')
             return
-    else:
+    elif len(sys.argv) < 2:
         print('Usage: python live.py <guild id> [output filename]')
         return
 
