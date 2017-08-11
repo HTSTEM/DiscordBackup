@@ -86,7 +86,7 @@ def main():
         return
 
     if len(sys.argv) == 3:
-        filename = sys.args[2]
+        filename = sys.argv[2]
     if len(sys.argv) > 3:
         print('Usage: python live.py <guild id> [output filename]')
         return
