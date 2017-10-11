@@ -2,23 +2,43 @@
 
 import sqlite3
 import sys
+import click
 import datetime
 
 import discord
 
 client = discord.Client()
 
+global_filename = ''
+global_guildid = 0
+
+@click.command()
+@click.option('--bot', '-B', default=False, is_flag=True)
+@click.option('--token', '-t', default='')
+@click.argument('guildid')
+@click.argument('filename')
+def main(bot, token, guildid, filename):
+    global global_guildid, global_filename
+    global_guildid = guildid
+    global_filename = filename
+    if token == '':
+        try:
+            client.run(open('token.txt','r').read().split('\n')[0], bot=bot)
+        except discord.errors.LoginFailure as e:
+            print(e, 'Try adding the `--bot` flag.')
+    else:
+        try:
+            client.run(token, bot=bot)
+        except discord.errors.LoginFailure as e:
+            print(e, 'Try adding the `--bot` flag.')
+
 @client.async_event
 async def on_ready():
-    if __name__ == '__main__':
-        print("Logged in")
-        if len(sys.argv) == 2:
-            await make_logs(sys.argv[1],sys.argv[1])
-        elif len(sys.argv) > 2:
-            await make_logs(sys.argv[1],sys.argv[2])
-        await client.logout()
+    print("Backup bot logged in.")
+    await make_logs()
+    await client.logout()
     
-async def make_logs(guildid, filename):
+async def make_logs():
     database = None
     def scrub(s):
         while "-" in s:
@@ -36,8 +56,8 @@ async def make_logs(guildid, filename):
         dbcur.close()
         return False
     
-    guild = client.get_guild(int(sys.argv[1]))
-    database = sqlite3.connect("{}.sqlite".format(filename))
+    guild = client.get_guild(int(global_guildid))
+    database = sqlite3.connect("{}.sqlite".format(global_filename))
     
     cursor = database.cursor()
     if check_table_exists('channels'):
@@ -92,8 +112,9 @@ async def make_logs(guildid, filename):
             )
             cursor.close()
             database.commit()
-    print("LOGS FINISHED!")
+    print("LOGS FINISHED")
 
 if __name__ == '__main__':
     #bot=False may have to be changed if you are using a bot
-    client.run(open('token.txt','r').read().split('\n')[0], bot=False)
+    #client.run(open('token.txt','r').read().split('\n')[0], bot=False)
+    main()
