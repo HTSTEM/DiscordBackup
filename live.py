@@ -45,7 +45,7 @@ class Archiver(discord.Client):
 
                 self.database.commit()
 
-                print(message.channel.name, message.author, message.content)
+                print(f'{message.channel.name}, {message.author}, {message.content}')
 
         @self.async_event
         async def on_ready():
