@@ -32,7 +32,7 @@ def main(bot, token, guildid, filename):
         except discord.errors.LoginFailure as e:
             print(e, 'Try adding the `--bot` flag.')
 
-@client.async_event
+@client.event
 async def on_ready():
     print("Backup bot logged in.")
     await make_logs()
