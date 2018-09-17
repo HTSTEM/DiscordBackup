@@ -29,7 +29,7 @@ class Archiver(discord.Client):
             dbcur.close()
             return False
 
-        @self.async_event
+        @self.event
         async def on_message(message):
             if self.ready and message.guild.id == self.guild_id:
                 cursor = self.database.cursor()
@@ -47,7 +47,7 @@ class Archiver(discord.Client):
 
                 print(f'{message.channel.name}, {message.author}, {message.content}')
 
-        @self.async_event
+        @self.event
         async def on_ready():
             guild = self.get_guild(self.guild_id)
             if guild is None:
