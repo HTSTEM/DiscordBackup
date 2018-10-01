@@ -22,3 +22,8 @@ install these, run these commands:
 $ sudo python3 -m pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 $ sudo python3 -m pip install sqlite3
 ```
+or when using windows:
+```
+$ py -m pip install -U git+https://github.com/Rapptz/discord.py@rewrite
+$ py -m pip install sqlite3
+```
