@@ -16,9 +16,5 @@ You may need to manually change `bot=False` to `bot=True` on line 64 of
 `backup.py` and line 73 of `live.py`.
 
 ## Dependencies
-You'll need `discord.py` rewrite and `sqlite3` to run these scripts. To
-install these, run these commands:
-```
-$ sudo python3 -m pip install -U git+https://github.com/Rapptz/discord.py@rewrite
-$ sudo python3 -m pip install sqlite3
-```
+You'll need `git+https://github.com/Rapptz/discord.py@rewrite` and `sqlite3` to run these scripts.
+Install these as normal using pip. (`sudo pip install -U` on linux or `py -m pip install -U` on windows)
