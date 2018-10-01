@@ -27,6 +27,3 @@ or when using windows:
 $ py -m pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 $ py -m pip install sqlite3
 ```
-
-## Additional Notes
-Currently only Supports Python 3.6 and lower
