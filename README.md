@@ -18,3 +18,5 @@ You may need to manually change `bot=False` to `bot=True` on line 64 of
 ## Dependencies
 You'll need `git+https://github.com/Rapptz/discord.py@rewrite` and `sqlite3` to run these scripts.
 Install these as normal using pip. (`sudo pip install -U` on linux or `py -m pip install -U` on windows)
+
+If you're running windows, you'll need to rename python3 to py and add sudo to your PATH.
